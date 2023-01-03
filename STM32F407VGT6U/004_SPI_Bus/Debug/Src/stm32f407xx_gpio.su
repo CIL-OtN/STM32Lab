@@ -1,0 +1,7 @@
+stm32f407xx_gpio.c:14:6:wait	16	static
+stm32f407xx_gpio.c:22:6:debounce	16	static
+stm32f407xx_gpio.c:30:6:GPIO_Init	24	static
+stm32f407xx_gpio.c:70:6:GPIO_ToggleBit	16	static
+stm32f407xx_gpio.c:80:6:GPIO_SetBit	16	static
+stm32f407xx_gpio.c:88:6:GPIO_ResetBit	16	static
+stm32f407xx_gpio.c:97:9:GPIO_ReadFromInputPin	24	static

@@ -1,0 +1,6 @@
+stm32f407xx_spi.c:7:6:SPI_PeriClockControl	16	static
+stm32f407xx_spi.c:42:6:SPI_Init	16	static
+stm32f407xx_spi.c:100:6:SPI_SendData	24	static
+stm32f407xx_spi.c:105:6:SPI_ReceiveData	24	static
+stm32f407xx_spi.c:111:6:SPI_IRQInterruptConfig	16	static
+stm32f407xx_spi.c:116:6:SPI_IRQPriorityConfig	16	static

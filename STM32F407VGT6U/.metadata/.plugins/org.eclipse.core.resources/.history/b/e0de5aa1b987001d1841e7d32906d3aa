@@ -1,0 +1,25 @@
+/**
+ ******************************************************************************
+ * @file           : main.c
+ * @author         : Waldemar Schneider
+ * @brief          : Vier LED's
+ ******************************************************************************
+ * @attention
+ *
+ * Dieses Programm schaltet alle vier LED's auf dem Discovery Board ein!
+ *
+ ******************************************************************************
+ */
+
+#include <stdio.h>
+#include <stdint.h>
+
+
+
+
+int main(void)
+{
+
+
+   while (1);
+}

@@ -1,0 +1,106 @@
+/**
+ ******************************************************************************
+ * @file           : main.c
+ * @author         : Waldemar Schneider
+ * @brief          : Vier LED's
+ ******************************************************************************
+ * @attention
+ *
+ * Dieses Programm schaltet alle vier LED's auf dem Discovery Board ein!
+ *
+ ******************************************************************************
+ */
+
+#include <stdio.h>
+#include <stdint.h>
+
+// Definition der Adresse des GPIOD_MODER-Registers (GPIO-Port D, Modus-Register)
+#define GPIOD_MODER ((volatile uint32_t*) 0x40020C00)
+
+// Definition der Adresse des GPIOD_AFRL-Registers (GPIO-Port D, Alternate Function Low Register)
+#define GPIOD_AFRL ((volatile uint32_t*) 0x40020C20)
+
+// Definition der Adresse des GPIOD_OTYPER-Registers (GPIO-Port D, Output Type Register)
+#define GPIOD_OTYPER ((volatile uint32_t*) 0x40020C14)
+
+// Definition der Adresse des GPIOD_OSPEEDR-Registers (GPIO-Port D, Output Speed Register)
+#define GPIOD_OSPEEDR ((volatile uint32_t*) 0x40020C18)
+
+// Definition der Adresse des GPIOD_PUPDR-Registers (GPIO-Port D, Pull-Up/Pull-Down Register)
+#define GPIOD_PUPDR ((volatile uint32_t*) 0x40020C1C)
+
+// Definition der Adresse des TIM4_CR1-Registers (Timer 4, Control Register 1)
+#define TIM4_CR1 ((volatile uint32_t*) 0x40000800)
+
+// Definition der Adresse des TIM4_DIER-Registers (Timer 4, DMA/Interrupt Enable Register)
+#define TIM4_DIER ((volatile uint32_t*) 0x4000080C)
+
+// Definition der Adresse des TIM4_ARR-Registers (Timer 4, Auto-Reload Register)
+#define TIM4_ARR ((volatile uint32_t*) 0x40000824)
+
+// Definition der Adresse des TIM4_CCR1-Registers (Timer 4, Capture/Compare Register 1)
+#define TIM4_CCR1 ((volatile uint32_t*) 0x40000834)
+
+// Definition der Adresse des TIM4_CCMR1-Registers (Timer 4, Capture/Compare Mode Register 1)
+#define TIM4_CCMR1 ((volatile uint32_t*) 0x40000820)
+
+// Funktion für die Initialisierung des GPIO-Ports D und des Timers 4
+void init(void)
+{
+   // Aktiviere den Clock für den GPIO-Port D und den Timer 4
+   RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+   RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
+
+   // Setze den Modus für den Pin 12 des GPIO-Ports D auf Alternate Function (Alternate Function)
+   *GPIOD_MODER = (*GPIOD_MODER & ~(0x3 << (12 * 2))) | (0x2 << (12 * 2));
+
+   // Setze den Alternate Function für den Pin 12 des GPIO-Ports D auf Timer 4, Channel 1 (AF2)
+   *GPIOD_AFRL = (*GPIOD_AFRL & ~(0xF << (12 * 4))) | (0x2 << (12 * 4));
+
+   // Setze den Output Type für den Pin 12 des GPIO-Ports D auf Push-Pull
+   *GPIOD_OTYPER &= ~(1 << 12);
+
+   // Setze die Output Speed für den Pin 12 des GPIO-Ports D auf High Speed
+   *GPIOD_OSPEEDR = (*GPIOD_OSPEEDR & ~(0x3 << (12 * 2))) | (0x3 << (12 * 2));
+
+   // Setze den Pull-Up/Pull-Down Widerstand für den Pin 12 des GPIO-Ports D auf Pull-Up
+   *GPIOD_PUPDR = (*GPIOD_PUPDR & ~(0x3 << (12 * 2))) | (0x1 << (12 * 2));
+
+   // Deaktiviere den Timer 4
+   *TIM4_CR1 &= ~TIM_CR1_CEN;
+
+   // Setze den Upcounter-Modus für den Timer 4
+   *TIM4_CR1 &= ~TIM_CR1_DIR;
+
+   // Setze die Taktquelle für den Timer 4 auf PCLK1 (84 MHz)
+   *TIM4_CR1 &= ~TIM_CR1_CKD;
+
+   // Setze den Prescaler für den Timer 4 auf 8399 (für eine Frequenz von 1 kHz)
+   TIM4->PSC = 8399;
+
+      // Setze das Auto-Reload-Register für den Timer 4 auf 999 (für eine Pulsweite von 1 ms)
+      *TIM4_ARR = 999;
+
+      // Setze den Compare-Register 1 für den Timer 4 auf 499 (für eine Pulsweite von 500 ms)
+      *TIM4_CCR1 = 499;
+
+      // Setze den Capture/Compare Mode 1 für den Timer 4 auf PWM Mode 1 (PWM1)
+      *TIM4_CCMR1 = (*TIM4_CCMR1 & ~TIM_CCMR1_OC1M) | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
+
+      // Aktiviere den Timer 4
+      *TIM4_CR1 |= TIM_CR1_CEN;
+   }
+
+int main(void)
+{
+	   // Initialisiere den GPIO-Port D und den Timer 4
+	   init();
+
+	   while (1)
+	   {
+	      // Warte auf den nächsten Takt
+	      __asm("wfi");
+	   }
+
+   return 0;
+}

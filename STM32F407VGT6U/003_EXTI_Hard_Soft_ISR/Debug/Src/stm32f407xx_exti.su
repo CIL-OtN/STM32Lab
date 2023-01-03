@@ -1,0 +1,5 @@
+stm32f407xx_exti.c:15:6:EXTI_Init	24	static
+stm32f407xx_exti.c:63:6:EXTI_GenerateSWInterrupt	16	static
+stm32f407xx_exti.c:72:6:EXTI_ClearITPendingBit	16	static
+stm32f407xx_exti.c:88:6:EXTI_IRQInterruptConfig	16	static
+stm32f407xx_exti.c:133:6:EXTI_IRQPriorityConfig	24	static
